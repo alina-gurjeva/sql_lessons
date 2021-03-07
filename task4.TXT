@@ -1,0 +1,10 @@
+Команда для создания дампа:
+
+mysqldump --where="true limit 100" mysql help_keyword > hp.sql
+
+Далее при всех попытках развернуть, получала ошибку: 
+ERROR 3723 (HY000) at line 25: The table 'help_keyword' may not be created in the reserved tablespace 'mysql'.
+
+Решение так и не нашла, в том числе пыталась внутри mysql создать базу данных, а в ней таблицу с соотвествующим названием - получала ошибку  Table 'copy_hp.help_keyword' doesn't exist
+
+Не могу понять, в чем ошибка. 
