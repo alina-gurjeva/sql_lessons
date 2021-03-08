@@ -13,7 +13,7 @@ use example;
 create table users (
 id int unsigned not null auto_increment primary key,
 name varchar(50) not null
-)
+);
 
 
 

@@ -1,10 +1,22 @@
-Команда для создания дампа:
+1 - посмотрела структуру таблицы:
+mysql> describe mysql.help_keyword;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| help_keyword_id | int unsigned | NO   | PRI | NULL    |       |
+| name            | char(64)     | NO   | UNI | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
 
-mysqldump --where="true limit 100" mysql help_keyword > hp.sql
+2 - Сначала создала скрипт: script_create_table_task_4.txt для создания таблицы. Структуру списала из результата запроса выше.
 
-Далее при всех попытках развернуть, получала ошибку: 
-ERROR 3723 (HY000) at line 25: The table 'help_keyword' may not be created in the reserved tablespace 'mysql'.
+3 - и далее - выполнила следующие команды:
 
-Решение так и не нашла, в том числе пыталась внутри mysql создать базу данных, а в ней таблицу с соотвествующим названием - получала ошибку  Table 'copy_hp.help_keyword' doesn't exist
+mysql> source script_create_table_task_4.txt;
+Query OK, 0 rows affected (0.02 sec)
 
-Не могу понять, в чем ошибка. 
+mysql> insert into copy select * from mysql.help_keyword order by help_keyword_id limit 100;
+Query OK, 100 rows affected (0.01 sec)
+Records: 100  Duplicates: 0  Warnings: 0
+
+Таким образом, получили копию таблицы без использования dump, который не сработал на предыдущей попытке. 
