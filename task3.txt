@@ -6,7 +6,7 @@ mysqldump example > sample1.sql
 
 create database sample;
 
-Поэтому развернуть через cmd стандартной командой
+Потом развернуть через cmd стандартной командой
 
 mysql sample < sample1.sql
 
