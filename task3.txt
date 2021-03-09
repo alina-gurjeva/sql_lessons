@@ -1,0 +1,12 @@
+Этой командой создать dump.  
+
+mysqldump example > sample1.sql
+
+Зайти в MySql, создать базу данных sample:
+
+create database sample;
+
+Потом развернуть через cmd стандартной командой
+
+mysql sample < sample1.sql
+

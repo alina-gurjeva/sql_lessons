@@ -1,0 +1,4 @@
+create table copykey (
+id int unsigned not null primary key,
+name char(64) not null unique
+);

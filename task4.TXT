@@ -1,0 +1,22 @@
+1 - посмотрела структуру таблицы:
+mysql> describe mysql.help_keyword;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| help_keyword_id | int unsigned | NO   | PRI | NULL    |       |
+| name            | char(64)     | NO   | UNI | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+2 - Сначала создала скрипт: script_create_table_task_4.txt для создания таблицы. Структуру списала из результата запроса выше.
+
+3 - и далее - выполнила следующие команды:
+
+mysql> source script_create_table_task_4.txt;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into copy select * from mysql.help_keyword order by help_keyword_id limit 100;
+Query OK, 100 rows affected (0.01 sec)
+Records: 100  Duplicates: 0  Warnings: 0
+
+Таким образом, получили копию таблицы без использования dump, который не сработал на предыдущей попытке. 
