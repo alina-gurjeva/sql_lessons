@@ -32,12 +32,11 @@ CREATE TABLE users_posts (
 CREATE TABLE posts_likes (
 	post_id bigint UNSIGNED NOT NULL,
 	liked_by bigint UNSIGNED NOT NULL,
-	author bigint UNSIGNED NOT NULL PRIMARY KEY, -- можно было сделать (post_id, liked_by) - но вероятнее поиск будет по автору и можно "сэкономить" индекс
+	PRIMARY KEY (post_id, liked_by),
 	INDEX liked_by_inx (liked_by), -- поиск всех постов, которые лайкнул конкретный юзер
 	INDEX post_id_inx (post_id), -- поиск поста
 	CONSTRAINT post_id_fk FOREIGN KEY (post_id) REFERENCES users_posts (post_id),
-	CONSTRAINT liked_by_fk FOREIGN KEY (liked_by) REFERENCES users (id),
-	CONSTRAINT author_fk FOREIGN KEY (author) REFERENCES users (id)
+	CONSTRAINT liked_by_fk FOREIGN KEY (liked_by) REFERENCES users (id)
 );
 
 -- Лайки на медиа файлы
@@ -45,11 +44,9 @@ CREATE TABLE posts_likes (
 CREATE TABLE IF not EXISTS media_likes (
 	media_id bigint UNSIGNED NOT NULL,
 	liked_by bigint UNSIGNED NOT NULL,
-	owner bigint UNSIGNED NOT NULL PRIMARY KEY, -- опять же, можно было (media_id, liked_by), но мы не знаем заранее кто лайкнул, поэтому врядли будем так искать
-	INDEX liked_by_inx (liked_by),
+	PRIMARY KEY (media_id, liked_by),
 	CONSTRAINT media_id_fk FOREIGN KEY (media_id) REFERENCES media (id),
-	CONSTRAINT liked_by_fk FOREIGN KEY (liked_by) REFERENCES users (id),
-	CONSTRAINT owner_fk FOREIGN KEY (owner) REFERENCES users (id)
+	CONSTRAINT liked_by_fk1 FOREIGN KEY (liked_by) REFERENCES users (id)
 );
 
 -- Черный список
@@ -66,20 +63,35 @@ CREATE TABLE black_lists (
 
 CREATE TABLE schools (
 	school_id bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	school_name varchar(245) NOT NULL
+	school_name varchar(245) NOT NULL,
+	street varchar(245) NOT NULL,
+	num_house MEDIUMINT unsigned NOT NULL,
+	korpus TINYINT UNSIGNED DEFAULT NULL,
+	city varchar(50) NOT NULL, 
+	number_school varchar(10) -- в номерах школ могут встречаться буквы
 );
 
 CREATE TABLE university (
 	university_id bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	university_name varchar(245) NOT NULL
+	university_name varchar(245) NOT NULL,
+	street varchar(245) NOT NULL,
+	num_house MEDIUMINT unsigned NOT NULL,
+	korpus TINYINT UNSIGNED DEFAULT NULL,
+	city varchar(50) NOT NULL
 );
 
-CREATE TABLE education (
+CREATE TABLE user_school (
 	user_id bigint UNSIGNED NOT NULL PRIMARY KEY,
 	school_id bigint UNSIGNED DEFAULT NULL,
+	CONSTRAINT user_id_edu_fk FOREIGN KEY (user_id) REFERENCES users (id),
+	CONSTRAINT school_id_fk FOREIGN KEY (school_id) REFERENCES schools (school_id)
+);
+
+
+CREATE TABLE user_university (
+	user_id bigint UNSIGNED NOT NULL PRIMARY KEY,
 	university_id bigint UNSIGNED DEFAULT NULL,
 	CONSTRAINT user_id_edu_fk FOREIGN KEY (user_id) REFERENCES users (id),
-	CONSTRAINT school_id_fk FOREIGN KEY (school_id) REFERENCES schools (school_id),
 	CONSTRAINT university_id_fk FOREIGN KEY (university_id) REFERENCES university (university_id)
 );
 
@@ -103,7 +115,8 @@ CREATE TABLE chat_messages(
 	in_chat_id bigint UNSIGNED NOT NULL,
 	INDEX created_by_inx (created_by),
 	INDEX in_chat_id_inx (in_chat_id),
-	CONSTRAINT created_by_fk FOREIGN KEY (created_by) REFERENCES users (id)
+	CONSTRAINT created_by_fk FOREIGN KEY (created_by) REFERENCES users (id),
+	CONSTRAINT in_chat_id_fk FOREIGN KEY (in_chat_id) REFERENCES chats(chat_id)
 );
 
 CREATE TABLE chat_members (
@@ -117,8 +130,8 @@ CREATE TABLE chat_members (
 -- Посты в сообществе
 
 CREATE TABLE community_posts (
-	message_id bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	message_text text NOT NULL,
+	post_id bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	post_text text NOT NULL,
 	created_by bigint UNSIGNED NOT NULL,
 	created_at datetime NOT NULL DEFAULT current_timestamp,
 	in_community_id bigint UNSIGNED NOT NULL,
